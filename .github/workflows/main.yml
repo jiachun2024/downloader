@@ -1,32 +1,28 @@
-name: Download WeKnora Images
+name: Part 1 - Core Apps
 on: workflow_dispatch
 
 jobs:
-  download-and-package:
+  download-part1:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. 拉取镜像 (Pull Images)
+      - name: 1. 拉取核心镜像
         run: |
-          docker pull paradedb/paradedb:v0.18.9-pg17
-          docker pull redis:7
-          docker pull ollama/ollama:latest
           docker pull wechatopenai/weknora-app:latest
           docker pull wechatopenai/weknora-ui:latest
           docker pull wechatopenai/weknora-docreader:latest
+          docker pull redis:7
 
-      - name: 2. 打包镜像 (Save to Tar)
+      - name: 2. 打包核心镜像
         run: |
-          docker save -o weknora-offline.tar \
-          paradedb/paradedb:v0.18.9-pg17 \
-          redis:7 \
-          ollama/ollama:latest \
+          docker save -o weknora-core.tar \
           wechatopenai/weknora-app:latest \
           wechatopenai/weknora-ui:latest \
-          wechatopenai/weknora-docreader:latest
+          wechatopenai/weknora-docreader:latest \
+          redis:7
 
-      - name: 3. 上传结果 (Upload Artifact)
+      - name: 3. 上传核心包
         uses: actions/upload-artifact@v4
         with:
-          name: weknora-images-bundle
-          path: weknora-offline.tar
+          name: weknora-core-bundle
+          path: weknora-core.tar
           retention-days: 1
