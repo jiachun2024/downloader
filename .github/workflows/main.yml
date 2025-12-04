@@ -1,0 +1,32 @@
+name: Download WeKnora Images
+on: workflow_dispatch
+
+jobs:
+  download-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 拉取镜像 (Pull Images)
+        run: |
+          docker pull paradedb/paradedb:v0.18.9-pg17
+          docker pull redis:7
+          docker pull ollama/ollama:latest
+          docker pull wechatopenai/weknora-app:latest
+          docker pull wechatopenai/weknora-ui:latest
+          docker pull wechatopenai/weknora-docreader:latest
+
+      - name: 2. 打包镜像 (Save to Tar)
+        run: |
+          docker save -o weknora-offline.tar \
+          paradedb/paradedb:v0.18.9-pg17 \
+          redis:7 \
+          ollama/ollama:latest \
+          wechatopenai/weknora-app:latest \
+          wechatopenai/weknora-ui:latest \
+          wechatopenai/weknora-docreader:latest
+
+      - name: 3. 上传结果 (Upload Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: weknora-images-bundle
+          path: weknora-offline.tar
+          retention-days: 1
