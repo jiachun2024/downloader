@@ -1,0 +1,24 @@
+name: Part 2 - DB and AI
+on: workflow_dispatch
+
+jobs:
+  download-part2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 拉取数据库和AI
+        run: |
+          docker pull paradedb/paradedb:v0.18.9-pg17
+          docker pull ollama/ollama:latest
+
+      - name: 2. 打包数据库和AI
+        run: |
+          docker save -o weknora-db-ai.tar \
+          paradedb/paradedb:v0.18.9-pg17 \
+          ollama/ollama:latest
+
+      - name: 3. 上传数据库包
+        uses: actions/upload-artifact@v4
+        with:
+          name: weknora-db-ai-bundle
+          path: weknora-db-ai.tar
+          retention-days: 1
