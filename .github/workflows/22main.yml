@@ -1,0 +1,19 @@
+name: Part 3 - MinIO Only
+on: workflow_dispatch
+
+jobs:
+  download-minio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 拉取 MinIO
+        run: docker pull minio/minio:latest
+
+      - name: 2. 打包 MinIO
+        run: docker save -o weknora-minio.tar minio/minio:latest
+
+      - name: 3. 上传 MinIO 包
+        uses: actions/upload-artifact@v4
+        with:
+          name: weknora-minio-bundle
+          path: weknora-minio.tar
+          retention-days: 1
